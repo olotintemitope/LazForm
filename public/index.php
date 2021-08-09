@@ -29,7 +29,7 @@ try {
 //        ->label('Find the nearest station');
     echo Form::Input()->type(Type::TEXT)
         ->attribute('id', 'street')
-        ->attribute('name', 'street')
+        ->attribute('name', "name")
         ->attribute('placeholder', 'Enter street name')
         ->label('Find the nearest station')
         ->labelDetails("<br><span>Minimum characters of 12 length</span>");

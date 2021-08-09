@@ -29,4 +29,5 @@ final class Type extends Enum
     const HIDDEN = "hidden";
     const IMAGE = "image";
     const MONTH = "month";
+
 }

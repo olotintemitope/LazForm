@@ -4,6 +4,7 @@ namespace LazForm\Fields;
 
 use Exception;
 use LazForm\Contracts\InputAbstract;
+use LazForm\Type\FieldType\Type;
 
 class Input extends InputAbstract
 {
@@ -53,9 +54,13 @@ class Input extends InputAbstract
     /**
      * @param string $type
      * @return $this
+     * @throws Exception
      */
     public function type(string $type): Input
     {
+        if (!in_array($type, Type::getValues(), true)) {
+            throw new Exception('Input type unrecognized');
+        }
         $this->type = $type;
 
         return $this;
