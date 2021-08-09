@@ -2,6 +2,9 @@
 
 namespace LazForm;
 
+/**
+ * @method static Input()
+ */
 class Form
 {
     private function getThemeClass(): string
@@ -25,6 +28,5 @@ class Form
             return new ("\\LazForm\\Fields\\$func");
         }
     }
-
 
 }

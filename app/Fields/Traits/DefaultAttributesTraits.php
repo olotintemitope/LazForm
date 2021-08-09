@@ -6,8 +6,8 @@ use LazForm\Fields\Input;
 
 trait DefaultAttributesTraits
 {
-    private bool $readOnly = false;
-    private bool $disabled = false;
+    protected bool $readOnly = false;
+    protected bool $disabled = false;
 
     /**
      * @return bool
