@@ -24,6 +24,9 @@ class Input extends InputAbstract
         );
     }
 
+    /**
+     * @return string
+     */
     public function getFieldType(): string
     {
         return $this->type;
@@ -56,5 +59,20 @@ class Input extends InputAbstract
         $this->type = $type;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    protected function buildAttributes() : string
+    {
+        $filteredAttrs = [] ;
+
+        foreach (parent::buildAttributes() as $attr => $value) {
+            $filteredAttrs[] = "{$attr}=$value";
+        }
+
+        return implode(' ', $filteredAttrs);
     }
 }

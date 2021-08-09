@@ -10,6 +10,8 @@ abstract class InputAbstract
     public array $options = [];
     public array|string $selectedOptions;
     protected string $label;
+    private array $attributes;
+    private string $labelDetails = "";
 
     /**
      * @return string
@@ -18,8 +20,6 @@ abstract class InputAbstract
     {
         return $this->label;
     }
-    private array $attributes;
-    private string $labelDetails = "";
 
     /**
      * @return array
@@ -77,7 +77,7 @@ abstract class InputAbstract
 
     public function transformAttributes(string $html): string|null
     {
-        $regex = "/([a-z]\w+)(=){1}([a-z]\w+)/";
+        $regex = "/([a-z]\w+)(=){1}([a-z ]\w+)/";
 
         return preg_replace_callback($regex, static function ($matches) {
             if (count($matches) > 0) {
@@ -90,17 +90,18 @@ abstract class InputAbstract
      * @return array|Exception
      * @throws Exception
      */
-    public function getAttributes(): array|Exception
+    public function getAttributes(): array
     {
-        if (!isset($this->attributes['name'])) {
-            throw new Exception('name attribute is required');
+        $attributes = [];
+        $attrs = $this->attributes;
+
+        foreach ($attrs as $attr) {
+            foreach ($attr as $attribute => $value) {
+                $attributes[$attribute] = $value;
+            }
         }
 
-        if (!isset($this->attributes['id'])) {
-            throw new Exception('id attribute is required');
-        }
-
-        return $this->attributes;
+        return $attributes;
     }
 
 
@@ -117,51 +118,35 @@ abstract class InputAbstract
 
 
     /**
-     * @param array $attributes
+     * @param string $attribute
+     * @param string $value
+     * @return InputAbstract
      */
-    public function attributes(array $attributes): InputAbstract
+    public function attribute(string $attribute, string $value): InputAbstract
     {
         $attrs = [];
+        $attrs[strip_tags($attribute)] = strip_tags($value);
 
-        foreach ($attributes as $key => $attribute) {
-            $attrs[strip_tags($key)] = strip_tags($attribute);
-        }
-
-        $this->attributes = $attrs;
+        $this->attributes[] = $attrs;
         return $this;
     }
 
     /**
      * @throws Exception
      */
-    public function buildAttributes(): string
+    protected function buildAttributes(): array|string
     {
-        $attr = [];
+        $attributes = [];
+        $attrs = $this->getAttributes();
 
-        $filteredAttrs = array_filter($this->getAttributes(), function ($value, $attr) {
-            return !in_array($attr, ['id', 'for', 'name', 'value']);
-        }, ARRAY_FILTER_USE_BOTH);
-
-        $filteredAttrs['id'] = $this->getAttributes()['id'];
-        $filteredAttrs['name'] = $this->getAttributes()["name"];
-        $filteredAttrs['value'] = '"'.($this->getValue()).'"';
-        $filteredAttrs['placeholder'] = '"'.($this->getAttributes()['placeholder']).'"';
-
-        if ($this->readOnly) {
-            $filteredAttrs['readonly'] = 'readonly';
-        }
-
-        if ($this->disabled) {
-            $filteredAttrs['disabled'] = 'disabled';
-        }
-
-        foreach ($filteredAttrs as $key => $value) {
-            if ($key === 'class') {
-                $attr[] = "{$key}={$this->getThemeClass()} {$value}";
+        foreach ($attrs as $attribute => $value) {
+            if ($attribute === 'class') {
+                $attributes[$attribute] = "{$this->getThemeClass()} {$value}";
             } else {
-                $attr[] = "{$key}={$value}";
+                $attributes[$attribute] = '"'.$value.'"';
             }
         }
-        return implode(' ', $attr);
+
+        return $attributes;
     }
 }
