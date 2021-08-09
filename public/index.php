@@ -27,7 +27,7 @@ try {
 //    echo Form::Input()->type(Type::CHECKBOX)
 //        ->attributes(['id' => 'street', 'name' => 'street_star', 'placeholder' => "Enter street name"])
 //        ->label('Find the nearest station');
-    echo Form::Input()->type(Type::TEXT)
+    echo Form::Input()->type(Type::DATE)
         ->attribute('id', 'street')
         ->attribute('name', "name")
         ->attribute('placeholder', 'Enter street name')
